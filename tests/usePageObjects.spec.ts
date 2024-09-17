@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { NavigationPage } from "../page-objects/navigationPage";
 import { FormLayoutsPage } from "../page-objects/formLayoutsPage";
 import { DatepickerPage } from "../page-objects/datepickerPage";
+import dayjs from "dayjs";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("http://localhost:4200/");
@@ -33,8 +34,10 @@ test("parametrized methods", async ({ page }) => {
     true
   );
   await navigateTo.datepickerPage();
-  await onDatepickPage.selectCommonDatePickerFromToday(1)
-//   await onDatepickPage.selectDatepickerWithRangeFromToday(5, 16)
+  await onDatepickPage.selectCommonDatePickerFromToday(1);
+  await onDatepickPage.selectDatepickerWithRangeFromToday(5, 16);
 
-  await onDatepickPage.selectDatepickerWithRangeFromToday(5, 19)
+  console.log(dayjs().format("YYYY-MM-DD"));
+
+  // await onDatepickPage.selectDatepickerWithRangeFromToday(5, 19)
 });

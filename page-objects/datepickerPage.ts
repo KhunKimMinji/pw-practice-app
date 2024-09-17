@@ -9,21 +9,27 @@ export class DatepickerPage {
   async selectCommonDatePickerFromToday(numberOfDayFromToday) {
     const calendarInputField = this.page.getByPlaceholder("Form Picker");
     await calendarInputField.click();
-    const dateToAssert = await this.selectDateInTheCalendar(numberOfDayFromToday)
+    const dateToAssert = await this.selectDateInTheCalendar(
+      numberOfDayFromToday
+    );
     await expect(calendarInputField).toHaveValue(dateToAssert);
   }
 
-  async selectDatepickerWithRangeFromToday(startDayFromToday: number, endDayFromToday: number){
+  async selectDatepickerWithRangeFromToday(
+    startDayFromToday: number,
+    endDayFromToday: number
+  ) {
     const calendarInputField = this.page.getByPlaceholder("Range Picker");
     await calendarInputField.click();
-    const dateToAssertStart = await this.selectDateInTheCalendar(startDayFromToday)
-    const dateToAssertEnd = await this.selectDateInTheCalendar(endDayFromToday)
-    const dateToAssert = `${dateToAssertStart} - ${dateToAssertEnd}`
+    const dateToAssertStart = await this.selectDateInTheCalendar(
+      startDayFromToday
+    );
+    const dateToAssertEnd = await this.selectDateInTheCalendar(endDayFromToday);
+    const dateToAssert = `${dateToAssertStart} - ${dateToAssertEnd}`;
     await expect(calendarInputField).toHaveValue(dateToAssert);
-
   }
 
-  private async selectDateInTheCalendar(numberOfDayFromToday: number){
+  private async selectDateInTheCalendar(numberOfDayFromToday: number) {
     let date = new Date();
     date.setDate(date.getDate() + numberOfDayFromToday);
     const expetedDate = date.getDate().toString();
@@ -46,9 +52,9 @@ export class DatepickerPage {
     }
 
     await this.page
-      .locator('.day-cell.ng-star-inserted')
+      .locator(".day-cell.ng-star-inserted")
       .getByText(expetedDate, { exact: true })
       .click();
-    return dateToAssert
+    return dateToAssert;
   }
 }
