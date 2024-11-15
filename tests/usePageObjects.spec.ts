@@ -1,10 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { PageManager } from "../page-objects/pageManager";
-import { NavigationPage } from "../page-objects/navigationPage";
-import { FormLayoutsPage } from "../page-objects/formLayoutsPage";
-import { DatepickerPage } from "../page-objects/datepickerPage";
 import dayjs from "dayjs";
 import { faker } from "@faker-js/faker";
+import { argosScreenshot } from "@argos-ci/playwright";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -59,5 +57,7 @@ test.only("parametrized methods", async ({ page }) => {
 test("testing with argos ci", async ({ page }) => {
   const pm = new PageManager(page); // ทำการ initialize object of class การสร้างอินสแตนซ์ (วัตถุ) จากคลาส โดยใช้คำสั่ง new ซึ่งจะมี properties(ex.band) และ methods(ex.bmw) ตามที่กำหนดไว้ในคลาสนั้น และสามารถนำไปใช้งานต่อได้
   await pm.navigateTo().formLayoutsPage();
+  await argosScreenshot(page, "form layouts page");
   await pm.navigateTo().datepickerPage();
+  await argosScreenshot(page, "datepicker page");
 });

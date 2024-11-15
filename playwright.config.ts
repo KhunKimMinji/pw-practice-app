@@ -29,6 +29,14 @@ export default defineConfig<TestOptions>({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     // ["allure-playwright"],
+    process.env.CI ? ["dot"] : ["list"],
+    [
+      "@argos-ci/playwright/reporter",
+      {
+        // Upload to Argos on CI only.
+        uploadToArgos: !!process.env.CI,
+      },
+    ],
     ["html"],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -44,6 +52,7 @@ export default defineConfig<TestOptions>({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    screenshot: "only-on-failure",
     // actionTimeout: 5000,
     navigationTimeout: 5000,
     video: {
