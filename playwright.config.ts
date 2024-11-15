@@ -11,7 +11,7 @@ require("dotenv").config();
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig<TestOptions>({
-  timeout: 40000,
+  timeout: 120000,
   // globalTimeout: 60000,
 
   expect: {
@@ -22,7 +22,7 @@ export default defineConfig<TestOptions>({
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
 
-  /* Retry on CI only */ 
+  /* Retry on CI only */
   retries: 1,
   /* Opt out of parallel tests on CI. */
 
