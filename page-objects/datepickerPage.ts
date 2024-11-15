@@ -1,10 +1,10 @@
 import { Page, expect } from "@playwright/test";
+import dayjs from "dayjs";
+import { HelperBase } from "./helperBase";
 
-export class DatepickerPage {
-  private readonly page: Page;
-
+export class DatepickerPage extends HelperBase {
   constructor(page: Page) {
-    this.page = page;
+    super(page);
   }
   async selectCommonDatePickerFromToday(numberOfDayFromToday) {
     const calendarInputField = this.page.getByPlaceholder("Form Picker");
@@ -15,24 +15,63 @@ export class DatepickerPage {
     await expect(calendarInputField).toHaveValue(dateToAssert);
   }
 
+  private shouldSelectNextMonth(endDayFromToday: number): boolean {
+    const today = dayjs();
+    const endDate = dayjs().add(endDayFromToday, "day");
+    const isShouldSelectNextMonth = today.isSame(endDate, "month"); // compare if same month
+    console.log(today.toDate(), endDate.toDate(), endDayFromToday);
+    return !isShouldSelectNextMonth;
+  }
+
   async selectDatepickerWithRangeFromToday(
     startDayFromToday: number,
     endDayFromToday: number
   ) {
     const calendarInputField = this.page.getByPlaceholder("Range Picker");
     await calendarInputField.click();
+
     const dateToAssertStart = await this.selectDateInTheCalendar(
       startDayFromToday
     );
-    const dateToAssertEnd = await this.selectDateInTheCalendar(endDayFromToday);
-    const dateToAssert = `${dateToAssertStart} - ${dateToAssertEnd}`;
-    await expect(calendarInputField).toHaveValue(dateToAssert);
+
+    const shouldSelectNextMonth = this.shouldSelectNextMonth(endDayFromToday);
+    console.log("shouldSelectNextMonth:", shouldSelectNextMonth);
+    if (shouldSelectNextMonth) {
+      // TODO: click Next month arrow if condition met
+      const expectedDate = dayjs()
+        .add(endDayFromToday, "day")
+        .date()
+        .toString();
+      console.log("final:", expectedDate);
+      await this.page
+        .locator('nb-calendar-pageable-navigation [data-name="chevron-right"]')
+        .click();
+      const locate = this.page
+        .locator(".day-cell.ng-star-inserted")
+        .getByText(expectedDate, { exact: true });
+      console.log("locate:", locate);
+      await this.page
+        .locator(".day-cell.ng-star-inserted")
+        .getByText(expectedDate, { exact: true })
+        .nth(0)
+        .click();
+    } else {
+      const dateToAssertEnd = await this.selectDateInTheCalendar(
+        endDayFromToday
+      );
+
+      const dateToAssert = `${dateToAssertStart} - ${dateToAssertEnd}`;
+      console.log(dateToAssert);
+
+      await expect(calendarInputField).toHaveValue(dateToAssert);
+    }
   }
 
   private async selectDateInTheCalendar(numberOfDayFromToday: number) {
     let date = new Date();
     date.setDate(date.getDate() + numberOfDayFromToday);
     const expetedDate = date.getDate().toString();
+    // console.log("expecteddate", expetedDate);
     const expectedMonthShot = date.toLocaleString("En-US", { month: "short" });
     const expectedMonthLong = date.toLocaleString("En-US", { month: "long" });
     const expectedYear = date.getFullYear();

@@ -1,16 +1,24 @@
 import { test, expect } from "@playwright/test"; //import library | expect เพื่อเช็ค assertion
 
+test.describe.configure({ mode: "parallel" });
+
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:4200/");
+  await page.goto("/");
 });
 
 test.describe("Form Layouts page", () => {
+  test.describe.configure({ retries: 0 });
+  test.describe.configure({ mode: "serial" });
+
   test.beforeEach(async ({ page }) => {
     await page.getByText("Forms").click();
     await page.getByText("Form Layouts").click();
   });
 
-  test("input fields", async ({ page }) => {
+  test("input fields", async ({ page }, testInfo) => {
+    if (testInfo.retry) {
+      //do something
+    }
     const usingTheGridEmailInput = page
       .locator("nb-card", { hasText: "Using the Grid" })
       .getByRole("textbox", { name: "Email" });
@@ -253,4 +261,4 @@ test("slider", async ({ page }) => {
   await expect(tempBox).toContainText("30");
 });
 
-//.toHaveTitle ต้องมี title คำว่า 
+//.toHaveTitle ต้องมี title คำว่า
